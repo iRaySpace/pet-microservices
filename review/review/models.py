@@ -11,3 +11,7 @@ class Review(BaseModel):
     parent: int
     rating: int
     feedback: Optional[str] = None
+
+class EventRequest(BaseModel):
+    eventType: str
+    data: dict

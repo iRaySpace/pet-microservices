@@ -9,3 +9,7 @@ class Clinic(BaseModel):
     id: int
     name: str
     description: Optional[str] = None
+
+class EventRequest(BaseModel):
+    eventType: str
+    data: dict

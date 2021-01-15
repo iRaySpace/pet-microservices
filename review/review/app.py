@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
-from models import Review, ReviewRequest
+import requests
+
+from models import Review, ReviewRequest, EventRequest
 
 app = FastAPI()
 app.add_middleware(
@@ -31,4 +33,18 @@ def create_review(review: ReviewRequest):
     new_review = Review(**review.dict(), id=reviews_last_id)
     reviews.append(new_review)
     reviews_last_id = reviews_last_id + 1
+    _post_to_eventbus("REVIEW_CREATED", new_review)
     return new_review
+
+
+@app.post("/events")
+def post_events(event: EventRequest):
+    print('review', event)
+    return "OK"
+
+
+def _post_to_eventbus(event_type, data_model):
+    requests.post("http://localhost:8010/events", json={
+        "eventType": event_type,
+        "data": data_model.dict(),
+    })
